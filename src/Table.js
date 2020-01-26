@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react'
+import React, { Component, Fragment } from 'react';
 
 export default class Table extends Component {
     constructor(props) {
@@ -9,54 +9,54 @@ export default class Table extends Component {
             packingFee: '',
             unpackingFee: '',
             inputFields: []
-            // inputFields: [{ item: '', materialFee: '', packingFee: '', unpackingFee: '' }]
-        }
-    }
+        };
+    };
 
-    onSelectChange = (e, index) => {
+    onSelectChange = (index, e) => {
         e.persist();
         this.setState(() => ({ item: e.target.value }));
-    }
+    };
 
-    onChange = (e, index) => {
+    onChange = (index, e) => {
         e.persist();
 
-        console.log(index);
-
         let values = [...this.state.inputFields];
+
+        let value = e.target.value.slice(1);
 
         if(e.target.name === 'materialFee') {
-            // if(index == e.target.id) {
-                values[index].materialFee = e.target.value;
-                this.setState(() => ({ materialFee: e.target.value }));
-            // }
+            values[index].materialFee = value;
         } else if(e.target.name === 'packingFee') {
-            values[index].packingFee = e.target.value;
-            this.setState(() => ({ packingFee: e.target.value }));
+            values[index].packingFee = value;
         } else if(e.target.name === 'unpackingFee') {
-            values[index].unpackingFee = e.target.value;
-            this.setState(() => ({ unpackingFee: e.target.value }));
-        } else {
-            return;
-        }
-
-        console.log(values);
+            values[index].unpackingFee = value;
+        };
 
         this.setState(() => ({ inputFields: values }));
-    }
+    };
 
-    onAddHandler = (e, index) => {
-        e.preventDefault();
-        let values = [...this.state.inputFields]
-        values.push({ item: this.state.item, materialFee: this.state.materialFee, packingFee: this.state.packingFee, unpackingFee: this.state.unpackingFee })
-        this.setState({ inputFields: values });
-    }
-
-    onDeleteHandler = (e, index) => {
+    onAddHandler = (index, e) => {
         let values = [...this.state.inputFields];
-        values.splice(index,1);
-        this.setState(() => ({ inputFields: values }));
-    }
+        values.push({
+            item: '',
+            materialFee: '',
+            packingFee: '',
+            unpackingFee: ''
+        });
+        this.setState({ inputFields: values });
+    };
+
+    onDeleteHandler = (index, e) => {
+        let values = [...this.state.inputFields];
+
+        let filtered = values.filter((item, i) => {
+            if(index !== i) {
+                return item;
+            };
+        });
+
+        this.setState(() => ({ inputFields: filtered }));
+    };
 
     render() {
         let { inputFields } = this.state;
@@ -71,7 +71,7 @@ export default class Table extends Component {
                                 <Fragment key={index}>
                                     <tr>
                                         <td>
-                                            <select onChange={(e) => this.onSelectChange(e,index)}>
+                                            <select onChange={(e) => this.onSelectChange(index, e)}>
                                                 <option value="">Select</option>
                                                 <option name="item" value="A">A</option>
                                                 <option name="item" value="B">B</option>
@@ -79,16 +79,36 @@ export default class Table extends Component {
                                             </select>
                                         </td>
                                         <td>
-                                            <input id={index} type="text"  name="materialFee" value={`$`+this.state.materialFee} onChange={(e) => this.onChange(e,index)} />
+                                            <input
+                                                type="text"
+                                                name="materialFee"
+                                                value={`$`+field.materialFee}
+                                                onChange={(e) => this.onChange(index, e)}
+                                            />
                                         </td>
                                         <td>
-                                            <input type="text" name="packingFee" value={`$`+this.state.packingFee} onChange={(e) => this.onChange(e,index)} />
+                                            <input
+                                                type="text"
+                                                name="packingFee"
+                                                value={`$`+field.packingFee}
+                                                onChange={(e) => this.onChange(index, e)}
+                                            />
                                         </td>
                                         <td>
-                                            <input type="text" name="unpackingFee" value={`$`+this.state.unpackingFee} onChange={(e) => this.onChange(e,index)} />
+                                            <input
+                                                type="text"
+                                                name="unpackingFee"
+                                                value={`$`+field.unpackingFee}
+                                                onChange={(e) => this.onChange(index, e)}
+                                            />
                                         </td>
                                         <td>
-                                            <button key={index} onClick={(e) => this.onDeleteHandler(e,index)}>Delete Item</button>
+                                            <button
+                                                key={index}
+                                                onClick={(e) => this.onDeleteHandler(index, e)}
+                                            >
+                                                Delete Item
+                                            </button>
                                         </td>
                                     </tr>
                                 </Fragment>
@@ -98,9 +118,9 @@ export default class Table extends Component {
                 </table>
                 <button onClick={this.onAddHandler}>Add Item</button>
             </div>
-        )
-    }
-}
+        );
+    };
+};
 
 function Header(props) {
     return <thead>
@@ -110,4 +130,4 @@ function Header(props) {
             })}
         </tr>
     </thead>
-}
+};
